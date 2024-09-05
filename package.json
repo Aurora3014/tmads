@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "now-build": "next build"
   },
   "dependencies": {
     "@ant-design/charts": "^2.1.2",
