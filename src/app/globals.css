@@ -5,3 +5,8 @@
 html {
     background-color: #f0f4f8;
 }
+.tg_bg {
+    background-image: radial-gradient(64.13% 64.66% at 0% 0%, #d6d896, #d6d89600), radial-gradient(57.75% 64.84% at 100% 100%, #dbddbe, #dbddbe00), radial-gradient(49.87% 52.71% at 0% 100%, #78a389, #78a38900);
+    background-color: #99ba92;
+    background-blend-mode: lighten;
+}

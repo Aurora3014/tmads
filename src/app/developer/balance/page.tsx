@@ -2,7 +2,12 @@
 import Image from 'next/image'
 import toncoinLogo from '@/image/toncoin.png'
 import { Button, Table, Tooltip, TableProps, Tag } from 'antd'
-
+import { depositAddress } from '../../../constant'
+import {fromNano} from '@ton/ton'
+import Cookies from 'js-cookie';
+import { useEffect, useState } from 'react'
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore'
+import { db } from '@/lib/firebase'
 /////// ================== tempory data ========================////////
 
 
@@ -45,7 +50,59 @@ const data: DataType[] = [
 /////// ================== tempory data ========================////////
 
 
-export default function balance () {
+export default function Balance () {
+    const [tableData, setTableData] = useState<DataType[]>();
+    
+    const docRef = collection(db, 'Campaign')
+    const userInfo = JSON.parse(Cookies.get('user')!);
+    useEffect(()=>{
+        let datas: DataType[] = []
+        getDocs(docRef).then((docRes) => {
+            docRes.docs.map(docDoc => {
+                if(docDoc.get('email') == userInfo.id){
+                    getDocs(collection(db, `Campaign/${docDoc.id}/Advertiser`)).then((adRes) => {
+                        adRes.docs.map(adDoc => {
+                            {
+                                const convertRef = collection(db, `Campaign/${docDoc.id}/Advertiser/${adDoc.id}/Convert`);
+                                getDocs(convertRef).then((conRes) => {
+                                    conRes.docs.map(conDoc => {
+                                        datas.push({
+                                            key: conDoc.id,
+                                            amount: docDoc.get('amount'),
+                                            datetime: (new Date(conDoc.get('date'))).toISOString(),
+                                            tx: 'Reward for Convertion'
+                                        })
+                                        datas.sort((a, b) => {
+                                            return (new Date(a.datetime)).getTime() - (new Date(b.datetime)).getTime()
+                                        })
+                                        setTableData(datas)
+                                    })
+                                })
+                            }
+                        })
+                    })
+                }
+            })
+        }).catch(err => {
+            console.log(err)
+        })
+        getDocs(collection(db, `User/${userInfo.id}/Deposit`)).then(docRes => {
+            docRes.docs.map( singleDoc =>{
+                    datas.push({
+                        amount: (singleDoc.get('amount')),
+                        datetime: (new Date(singleDoc.get('date'))).toISOString(),
+                        tx: singleDoc.get('tx'),
+                        key: singleDoc.id
+                    })
+                    datas.sort((a, b) => {
+                        return (new Date(a.datetime)).getTime() - (new Date(b.datetime)).getTime()
+                    })
+                    setTableData(datas)
+                }
+            )
+        })
+    },[useState])
+    console.log(userInfo)
     return(
         <div>
             <div className="w-sm m-6 p-6 border flex flex-col bg-[#fbfcfe]">
@@ -56,7 +113,7 @@ export default function balance () {
                         className='w-10 h-10 mx-2 mt-2'
                     />
                     <div className='flex flex-col justify-center'>
-                        <p className='text-xl font-semibold '>0.03 TON</p>
+                        <p className='text-xl font-semibold '>{fromNano(+userInfo.balance)} TON</p>
                         <p className='text-[#333]'>Current Balance</p>
                     </div>
                 </div>
@@ -69,7 +126,7 @@ export default function balance () {
                 <div className='flex flex-row justify-between p-3 my-3 border rounded-xl' >
                     <div className='flex flex-col justify-center'>
                         <p className='font-semibold py-1'>Wallet</p>
-                        <p>UQCYCf9U1uYk4JeX0Cy469X4p-n2eLdPwEBSKh_kumxPKUkO</p>
+                        <p>{depositAddress}</p>
                     </div>
                     <div className='flex flex-col justify-center'>
                         <Button>Copy</Button>
@@ -78,7 +135,7 @@ export default function balance () {
                 <div className='flex flex-row justify-between p-3 my-3 border rounded-xl' >
                     <div className='flex flex-col justify-center'>
                         <p className='font-semibold py-1'>Comment</p>
-                        <p>06d45d21-a866-44c1-8fdb-3e37bdde21da</p>
+                        <p>{userInfo.commit}</p>
                     </div>
                     <div className='flex flex-col justify-center'>
                         <Button>Copy</Button>
@@ -86,7 +143,7 @@ export default function balance () {
                 </div>
             </div>
             <div className="w-sm m-6 p-6 border flex flex-col bg-[#fbfcfe]">
-                <Table columns={columns} dataSource={data} />
+                <Table columns={columns} dataSource={tableData} />
             </div>
         </div>
     )

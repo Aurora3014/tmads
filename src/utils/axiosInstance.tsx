@@ -4,7 +4,7 @@ export const createAxiosInstance = (history) => {
         const axiosInstance = axios.create({
                 baseURL: CURRENT_HOST,
                 headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                        Authorization: `Bearer ${Cookies.get('token')}`
                 }
         });
 
@@ -15,8 +15,8 @@ export const createAxiosInstance = (history) => {
                 error => {
                     if (error.response && error.response.status === 403) {
                         console.log('error ---------');
-                        localStorage.removeItem('token');
-                        history('/login');
+                        Cookies.remove('token');
+                        history(`${Cookies.get('mode')}/login`);
                     } else {
                         return error
                     }
