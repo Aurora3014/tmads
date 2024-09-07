@@ -12,7 +12,8 @@ interface CookieProviderProps {
 }
 
 export const CookieProvider: React.FC<CookieProviderProps> = ({ children }) => {
-    const auth = Cookies.get('auth') ? JSON.parse(Cookies.get('user') ? Cookies.get('user')! : '{}') : false;
+    console.log(Cookies.get('user') ? Cookies.get('user')! : '{}')
+    const auth = Cookies.get('user') ? JSON.parse(JSON.isRawJSON(Cookies.get('user')) ? Cookies.get('user')! : '{}') : false;
     const value: CookieContextType = {
         auth
     };

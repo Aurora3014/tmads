@@ -52,60 +52,70 @@ const data: DataType[] = [
 export default function Balance () {
     
     const [tableData, setTableData] = useState<DataType[]>();
+    const [userInfo, setUserInfo] = useState();
     const [balance, setBalance] = useState(BigInt(0));
-    const userInfo = JSON.parse(Cookies.get('user')!);
+    const userCookie = Cookies.get('user');
+    useEffect(() => {
+        if(userCookie)
+            setUserInfo(JSON.parse(userCookie!))
+    }, [])
     console.log(userInfo)
     const docRef = collection(db, 'Campaign')
 
     useEffect(() => {
         let datas: DataType[] = []
-        getDoc(doc(db, `User/${userInfo.id}`))
-            .then(res => {
-                setBalance(res.get('balance'));
-            })
-        getDocs(docRef).then((docRes) => {
-            docRes.docs.map(docDoc => {
-                getDocs(collection(db, `Campaign/${docDoc.id}/Advertiser`)).then((adRes) => {
-                    adRes.docs.map(adDoc => {
-                        if(adDoc.id == userInfo.id){
-                            const convertRef = collection(db, `Campaign/${docDoc.id}/Advertiser/${adDoc.id}/Convert`);
-                            getDocs(convertRef).then((conRes) => {
-                                conRes.docs.map(conDoc => {
-                                    datas.push({
-                                        key: conDoc.id,
-                                        amount: docDoc.get('amount'),
-                                        datetime: (new Date(conDoc.get('date'))).toISOString(),
-                                        tx: 'Reward for Convertion'
+        if(userInfo != undefined)
+            getDoc(doc(db, `User/${userInfo ? userInfo.id : ''}`))
+                .then(res => {
+                    setBalance(res.get('balance'));
+                })
+        if(userInfo != undefined)
+
+            getDocs(docRef).then((docRes) => {
+                docRes.docs.map(docDoc => {
+                    getDocs(collection(db, `Campaign/${docDoc.id}/Advertiser`)).then((adRes) => {
+                        adRes.docs.map(adDoc => {
+                            if(adDoc.id == (userInfo ? userInfo.id : '')){
+                                const convertRef = collection(db, `Campaign/${docDoc.id}/Advertiser/${adDoc.id}/Convert`);
+                                getDocs(convertRef).then((conRes) => {
+                                    conRes.docs.map(conDoc => {
+                                        datas.push({
+                                            key: conDoc.id,
+                                            amount: docDoc.get('amount'),
+                                            datetime: (new Date(conDoc.get('date'))).toISOString(),
+                                            tx: 'Reward for Convertion'
+                                        })
+                                        datas.sort((a, b) => {
+                                            return (new Date(a.datetime)).getTime() - (new Date(b.datetime)).getTime()
+                                        })
+                                        setTableData(datas)
                                     })
-                                    datas.sort((a, b) => {
-                                        return (new Date(a.datetime)).getTime() - (new Date(b.datetime)).getTime()
-                                    })
-                                    setTableData(datas)
                                 })
-                            })
-                        }
+                            }
+                        })
                     })
                 })
+            }).catch(err => {
+                console.log(err)
             })
-        }).catch(err => {
-            console.log(err)
-        })
-        getDocs(collection(db, `User/${userInfo.id}/Deposit`)).then(docRes => {
-            docRes.docs.map( singleDoc =>{
-                    datas.push({
-                        amount: (singleDoc.get('amount')),
-                        datetime: (new Date(singleDoc.get('date'))).toISOString(),
-                        tx: singleDoc.get('tx'),
-                        key: singleDoc.id
-                    })
-                    datas.sort((a, b) => {
-                        return (new Date(a.datetime)).getTime() - (new Date(b.datetime)).getTime()
-                    })
-                    setTableData(datas)
-                }
-            )
-        })
-      },[useState])
+        if(userInfo != undefined)
+
+            getDocs(collection(db, `User/${userInfo ? userInfo.id : ''}/Deposit`)).then(docRes => {
+                docRes.docs.map( singleDoc =>{
+                        datas.push({
+                            amount: (singleDoc.get('amount')),
+                            datetime: (new Date(singleDoc.get('date'))).toISOString(),
+                            tx: singleDoc.get('tx'),
+                            key: singleDoc.id
+                        })
+                        datas.sort((a, b) => {
+                            return (new Date(a.datetime)).getTime() - (new Date(b.datetime)).getTime()
+                        })
+                        setTableData(datas)
+                    }
+                )
+            })
+      },[userInfo])
 
     return(
         <div>
@@ -139,7 +149,7 @@ export default function Balance () {
                 <div className='flex flex-row justify-between p-3 my-3 border rounded-xl' >
                     <div className='flex flex-col justify-center'>
                         <p className='font-semibold py-1'>Comment</p>
-                        <p>{userInfo.commit}</p>
+                        <p>{userInfo ? userInfo!.commit : ''}</p>
                     </div>
                     <div className='flex flex-col justify-center'>
                         <Button>Copy</Button>

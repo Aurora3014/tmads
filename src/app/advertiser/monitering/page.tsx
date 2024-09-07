@@ -50,7 +50,6 @@ export default function Monitering (){
     const [dateRange, setDateRange] = useState<DateRange>({ startDate: null, endDate: null });
 
     const [querySnapshot, setQuerySnapshot] = useState<DataType[] | undefined>([]);
-    const userInfo = JSON.parse(Cookies.get('user')!);
     
     const handleDateRangeChange = (dates: any) => {
       if (dates) {

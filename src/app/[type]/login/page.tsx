@@ -22,7 +22,7 @@ export default function Login ()  {
             await login(email, password);
             
             const q = query(collection(db, "User"), where("email", "==", email));
-
+            Cookies.set('email', email)
             const querySnapshot = await getDocs(q);
             console.log(querySnapshot)
             Cookies.set('user', JSON.stringify({
@@ -31,6 +31,7 @@ export default function Login ()  {
                 balance: querySnapshot.docs[0].get('balance'),
                 email
             }))
+            console.log(Cookies.get('user'));
             router.push(`/${type}/balance`);
             notification.success({
                 message: 'Success',

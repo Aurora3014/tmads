@@ -16,8 +16,19 @@ export default function NewCampaign () {
     const [description, setDescription] = useState('')
     const [imageUrl, setImageUrl] = useState('')
     const [loading, setLoading] = useState(false)
-    const userInfo = JSON.parse(Cookies.get('user')!);
-    console.log(userInfo)
+    const [userInfo, setUserInfo] = useState();
+    const userCookie = Cookies.get('user');
+    if (userCookie) {
+        try {
+            setUserInfo(JSON.parse(userCookie))
+          // Proceed with userInfo
+        } catch (error) {
+          console.error('Error parsing JSON:', error);
+        }
+      } else {
+        console.warn('User cookie not found');
+        // Handle case where the cookie does not exist
+      }
     const onLogoChange = (info: UploadChangeParam) => {
         setLogoFileName(info.file.name.replaceAll(' ', '_'))
     }
@@ -30,11 +41,12 @@ export default function NewCampaign () {
             });
         }
     }
+
     const getBase64 = (img: RcFile, callback: (url: string) => void) => {
         const reader = new FileReader();
         reader.addEventListener('load', () => callback(reader.result as string));
         reader.readAsDataURL(img);
-      };
+    };
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
@@ -52,28 +64,26 @@ export default function NewCampaign () {
 
         formData.append('logoName', logoFileName)
         formData.append('bannerName', bannerFileName)
-        formData.append('email', userInfo.id)
-        // formData.append('userId', userInfo.id)
-        console.log(userInfo)
+        formData.append('email', userInfo ? userInfo.id : '')
         try {
-        const response = await fetch('/api/new-campaign', {
-            method: 'POST',
-            body: formData
-        });
-        
-        if (response.ok) {
-            const result = await response.json();
-            notification.success({
-                message: 'Success',
-                description: result.message,
+            const response = await fetch('/api/new-campaign', {
+                method: 'POST',
+                body: formData
             });
-            router.replace(location.href.replace('newCampaign', `campaigns/${result.id }`))
-        } else {
-            notification.error({
-                message: 'Error',
-                description: response.statusText,
-            });
-        }
+            
+            if (response.ok) {
+                const result = await response.json();
+                notification.success({
+                    message: 'Success',
+                    description: result.message,
+                });
+                router.replace(location.href.replace('newCampaign', `campaigns/${result.id }`))
+            } else {
+                notification.error({
+                    message: 'Error',
+                    description: response.statusText,
+                });
+            }
         } catch (error) {
             notification.error({
                 message: 'Error',
@@ -82,8 +92,8 @@ export default function NewCampaign () {
             console.log(error)
         }
         setLoading(false);
-        
     }
+    
     return(
         <div className="w-full">
             <div className='flex flex-row justify-between'>

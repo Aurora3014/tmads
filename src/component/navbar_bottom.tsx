@@ -14,7 +14,7 @@ type MenuItem = Required<MenuProps>['items'][number];
 const NavBar: React.FC = () => {
   const router = useRouter();
   const { auth } = useCookies();
-  const { email } = auth ? JSON.parse(Cookies.get('user') ? Cookies.get('user')! : '{}') : {email: undefined};
+  const email = Cookies.get('email')
   const onClick: MenuProps['onClick'] = (e) => {
     if(e.key == 'logout'){
       logout();
