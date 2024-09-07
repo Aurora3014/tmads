@@ -18,10 +18,15 @@ export default function UpdateCampaign () {
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [imageUrl, setImageUrl] = useState('')
-    const userInfo = JSON.parse(Cookies.get('user')!);
+    const [userInfo, setUserInfo] = useState();
     const [logoFileList, setLogoFileList] = useState<UploadFile[]>([]);
     const [bannerFileList, setBannerFileList] = useState<UploadFile[]>([]);
-    console.log(userInfo)
+    const userCookie = Cookies.get('user');
+    
+    useEffect(() => {
+        if(userCookie)
+            setUserInfo(JSON.parse(userCookie!))
+    }, [])
     
     const docRef = doc(db, 'Campaign', id)
     

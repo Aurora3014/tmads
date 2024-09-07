@@ -2,7 +2,7 @@
 import { Button, Input, InputNumber, Upload, notification, } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
 import { UploadOutlined } from '@ant-design/icons';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { RcFile, UploadChangeParam } from 'antd/es/upload'
 import { AdCard } from '@/component/AdCard'
 import Cookies from 'js-cookie';
@@ -18,17 +18,11 @@ export default function NewCampaign () {
     const [loading, setLoading] = useState(false)
     const [userInfo, setUserInfo] = useState();
     const userCookie = Cookies.get('user');
-    if (userCookie) {
-        try {
-            setUserInfo(JSON.parse(userCookie))
-          // Proceed with userInfo
-        } catch (error) {
-          console.error('Error parsing JSON:', error);
-        }
-      } else {
-        console.warn('User cookie not found');
-        // Handle case where the cookie does not exist
-      }
+
+    useEffect(() => {
+        if(userCookie)
+            setUserInfo(JSON.parse(userCookie!))
+    }, [])
     const onLogoChange = (info: UploadChangeParam) => {
         setLogoFileName(info.file.name.replaceAll(' ', '_'))
     }
