@@ -102,7 +102,7 @@ export default function Home() {
             <h2 className="text-xl md:text-2xl font-semibold">Our innovative ad network bridges the gap between advertisers and mini app and community, unlocking new revenue streams across the Telegram.</h2>
             <div className="">
               <a href='/developer/login'><button className="mr-10 bg-white text-blue-600 font-semibold py-3 px-6 rounded-lg shadow-lg hover:bg-gray-100 border border-blue-600 hover:border-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform transform hover:scale-105">Launch Ad</button></a>
-              <a href='/developer/login'><button className="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg border border-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform transform hover:scale-105">Provide Traffic</button></a>
+              <a href='/advertiser/login'><button className="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg border border-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform transform hover:scale-105">Provide Traffic</button></a>
               
             </div>
           </div>
