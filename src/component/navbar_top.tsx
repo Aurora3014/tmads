@@ -17,14 +17,14 @@ const items: MenuItem[] = [
   },
   {
     key: 'balance',
-    label: '0.03 T',
+    label: 'My Balance',
     icon: <DollarOutlined />,
   },
-  {
-    key: 'monitering',
-    label: 'Monitering',
-    icon: <LineChartOutlined />,
-  },
+  // {
+  //   key: 'monitering',
+  //   label: 'Monitering',
+  //   icon: <LineChartOutlined />,
+  // },
 ];
 
 const NavBar: React.FC = () => {

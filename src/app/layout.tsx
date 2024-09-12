@@ -11,6 +11,8 @@ import React from 'react';
 import Image from 'next/image'
 import favicon from '@/image/favicon.png'
 import { CookieProvider } from '../provider/CookieProvider';
+import { TonConnectUIProvider } from '@tonconnect/ui-react'
+
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
   const showNavbar = pathname !== '/' && !pathname.includes('/adcard');

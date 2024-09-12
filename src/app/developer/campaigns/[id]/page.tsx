@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, notification, Table, TableProps, Modal } from 'antd'
+import { Button, notification, Table, TableProps, Modal, Tooltip } from 'antd'
 import { serverUrl } from "@/constant"
 import { getEmail } from "@/lib/auth"
 import { db } from "@/lib/firebase"
@@ -8,7 +8,7 @@ import { addDoc, collection, doc, DocumentData, DocumentSnapshot, getDoc, getDoc
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { encode, decode } from 'js-base64';
-import { EditOutlined, EyeOutlined, PauseCircleOutlined, PlayCircleOutlined, SearchOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined, EyeOutlined, PauseCircleOutlined, PlayCircleOutlined, SearchOutlined } from '@ant-design/icons'
 import { AdCard } from '@/component/AdCard'
 
 
@@ -55,7 +55,6 @@ export default function Campaign () {
     const [docSnap, setDocSnap] = useState<DocumentSnapshot<DocumentData> | undefined>(undefined);
     // const [myAdSnap, setMyAdSnap] = useState<DocumentSnapshot<DocumentData> | undefined>(undefined);
     const [tableData, setTableData] = useState<DataType[]>();
-    const [email, setEmail] = useState('')
     const [apiKey, setApiKey] = useState('')
     const {id} = useParams<{id: string}>()
     const docRef = doc(db, 'Campaign', id)
@@ -84,11 +83,6 @@ export default function Campaign () {
         }).catch(err => {
             console.log(err)
         })
-        getEmail().then((res) => {
-            setEmail(res!);
-        }).catch(err => {
-            console.log(err)
-        })
     },[useState])
     
     const handleCopy = async (target: any) => {
@@ -99,18 +93,12 @@ export default function Campaign () {
         });
     }
 
+
     //Modal management
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const showModal = () => {
-      setIsModalOpen(true);
-    };
-  
-    const handleOk = () => {
-      setIsModalOpen(false);
-    };
-  
+
     const handleCancel = () => {
       setIsModalOpen(false);
     };
@@ -160,11 +148,16 @@ export default function Campaign () {
                             </div>
                         </>
                         <div className='mt-5 flex flex-row justify-end'>
-
-                            <Button icon={<EyeOutlined />} className='mr-1' onClick={()=>{setIsModalOpen(true)}}> Preview</Button>
-                            <Button icon={<PauseCircleOutlined />} className='mr-1'> Stop</Button>
-                            <Button icon={<EditOutlined />}><a href={location.href.replace('campaigns', 'updateCampaign')}> Edit </a></Button>
-                        </div>
+                            <Tooltip title='Preview'>
+                                <Button icon={<EyeOutlined />} className='mr-3' onClick={()=>{setIsModalOpen(true)}}></Button>
+                            </Tooltip>
+                            <Tooltip title='Stop'>
+                                <Button icon={<PauseCircleOutlined />} className='mr-3'></Button>
+                            </Tooltip>
+                            <Tooltip title='Edit'>
+                                <a href={location.href.replace('campaigns', 'updateCampaign')} className='mr-3'><Button icon={<EditOutlined />}></Button></a>
+                            </Tooltip>
+                            </div>
                     </div>
                 </div>
             </div>

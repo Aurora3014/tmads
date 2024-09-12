@@ -25,6 +25,7 @@
     "@ton/core": "^0.56.3",
     "@ton/crypto": "^3.3.0",
     "@ton/ton": "^14.0.0",
+    "@tonconnect/ui-react": "^2.0.9",
     "@types/formidable": "^3.4.5",
     "antd": "^5.19.1",
     "axios": "^1.7.2",

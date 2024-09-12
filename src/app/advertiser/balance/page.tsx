@@ -38,14 +38,6 @@ const columns: TableProps<DataType>['columns'] = [
     },
 ];
   
-const data: DataType[] = [
-    {
-        key: '1',
-        tx: '4d53570684b8df .... eb2f14608349f',
-        amount: 0.5,
-        datetime: '06-14-2024',
-    },
-];
 /////// ================== tempory data ========================////////
 
 
