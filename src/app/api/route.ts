@@ -50,9 +50,9 @@ export async function POST (req: NextRequest, res:NextResponse) {
             tx: 'Reward for Convertion',
             amount: -docDataCampaignme.get('amount')
         })
-        // const newDocRef = await addDoc(collection(docRefCampaignme, `Advertiser/${ad}/Convert`), {
-        //     date: Date.now(),
-        // })
+        const newDocRef = await addDoc(collection(docRefCampaignme, `Advertiser/${ad}/Convert`), {
+            date: Date.now(),
+        })
         
         return NextResponse.json({ message: 'Success' }, { status: 200 });
 
@@ -60,4 +60,4 @@ export async function POST (req: NextRequest, res:NextResponse) {
         console.log(error)
         return NextResponse.json({ message: 'Bad Request' }, { status: 500 });
     }
-}
+} 

@@ -1,6 +1,8 @@
+import { storage } from "@/lib/firebase";
 import { NextResponse } from "next/server";
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
+// import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 export async function POST (request: Request){
     // //first process files.
@@ -24,3 +26,20 @@ export async function POST (request: Request){
         return NextResponse.json({ Message: "Failed", status: 500 });
       }
 }
+
+// export async function POST(request: Request){
+//   const formdata = await request.formData();
+//   console.log(formdata);
+//   const logoFile = formdata.get("image") as File
+//   if(!logoFile)
+//       return NextResponse.json({error:'Images are missing'}, {status: 400});
+
+//   const logoBuffer = Buffer.from(await logoFile.arrayBuffer());
+//   // Create a root reference
+//   const storage = getStorage();      
+//   const storageRef = ref(storage, `image/${logoFile.name}`);
+//   uploadBytes(storageRef, logoBuffer).then(snapShot => {
+//       NextResponse.json({ Message: "Success!", status: 200 })
+//     }
+//   )
+// }
