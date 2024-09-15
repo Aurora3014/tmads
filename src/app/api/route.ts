@@ -15,9 +15,9 @@ export async function GET (req: NextRequest, res:NextResponse) {
         const docRef = doc(db, 'Campaign', me!)
         const docData = await getDoc(docRef);
         const redirectURL = await docData.get('redirectUrl');
-        // const newDocRef = await addDoc(collection(docRef, `Advertiser/${ad}/Click`), {
-        //     date: Date.now()
-        // })
+        const newDocRef = await addDoc(collection(docRef, `Advertiser/${ad}/Click`), {
+            date: Date.now()
+        })
         return NextResponse.redirect(redirectURL + `?ad=${ad}`)
     } catch (error) {
         return NextResponse.json({ message: error }, { status: 200 });
@@ -40,10 +40,10 @@ export async function POST (req: NextRequest, res:NextResponse) {
         const docDatame = await getDoc(docRefme);
         // const docDataad = await getDoc(docRefad);
         await updateDoc(docRefme, {
-            balance: (toNano(docDatame.get('balance') ? docDatame.get('balance') : 0) - toNano(docDataCampaignme.get('amount') ? docDataCampaignme.get('amount') : 0)).toString()
+            balance: (BigInt(docDatame.get('balance') ? docDatame.get('balance') : 0) - toNano(docDataCampaignme.get('amount') ? docDataCampaignme.get('amount') : 0)).toString()
         });
         await updateDoc(docRefad, {
-            balance: (toNano(docDatame.get('balance') ? docDatame.get('balance') : 0) + toNano(docDataCampaignme.get('amount') ? docDataCampaignme.get('amount') : 0)).toString()
+            balance: (BigInt(docDatame.get('balance') ? docDatame.get('balance') : 0) + toNano(docDataCampaignme.get('amount') ? docDataCampaignme.get('amount') : 0)).toString()
         });
         await addDoc(collection(db, `User/${docDatame.id}/Deposit`),{
             date: Date.now(),
