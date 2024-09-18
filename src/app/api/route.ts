@@ -38,12 +38,12 @@ export async function POST (req: NextRequest, res:NextResponse) {
         const docRefad = doc(db, 'User', ad!)
         console.log(me, ad)
         const docDatame = await getDoc(docRefme);
-        // const docDataad = await getDoc(docRefad);
+        const docDataad = await getDoc(docRefad);
         await updateDoc(docRefme, {
             balance: (BigInt(docDatame.get('balance') ? docDatame.get('balance') : 0) - toNano(docDataCampaignme.get('amount') ? docDataCampaignme.get('amount') : 0)).toString()
         });
         await updateDoc(docRefad, {
-            balance: (BigInt(docDatame.get('balance') ? docDatame.get('balance') : 0) + toNano(docDataCampaignme.get('amount') ? docDataCampaignme.get('amount') : 0)).toString()
+            balance: (BigInt(docDatame.get('balance') ? docDataad.get('balance') : 0) + toNano(docDataCampaignme.get('amount') ? docDataCampaignme.get('amount') : 0)).toString()
         });
         await addDoc(collection(db, `User/${docDatame.id}/Deposit`),{
             date: Date.now(),
